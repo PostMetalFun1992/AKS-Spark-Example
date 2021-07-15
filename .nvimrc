@@ -24,4 +24,6 @@ let g:NERDTreeIgnore = [
  \ '\.sock$',
  \ '\.pid$',
  \ '\.vim$',
+ \ '\.terraform$',
+ \ '\.terraform.lock.hcl$',
  \ ]
