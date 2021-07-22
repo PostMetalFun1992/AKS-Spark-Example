@@ -1,4 +1,3 @@
-#Modify this docker for your needs
 FROM openjdk:8-alpine
 
 ARG SPARK_VERSION_ARG=3.1.2
@@ -44,10 +43,10 @@ RUN wget -O $SPARK_HOME/jars/azure-data-lake-store-sdk-2.3.6.jar https://repo1.m
 RUN wget -O $SPARK_HOME/jars/azure-keyvault-core-1.0.0.jar https://repo1.maven.org/maven2/com/microsoft/azure/azure-keyvault-core/1.0.0/azure-keyvault-core-1.0.0.jar
 RUN wget -O $SPARK_HOME/jars/azure-keyvault-core-1.0.0.jar https://repo1.maven.org/maven2/ch/hsr/geohash/1.4.0/geohash-1.4.0.jar
 
-COPY ./docker/entrypoint.sh /opt/
-COPY ./dist/sparkbasics-*.egg /opt/
+# COPY ./docker/entrypoint.sh /opt/
+# COPY ./dist/sparkbasics-*.egg /opt/
 
-RUN chmod +x /opt/*.sh
+# RUN chmod +x /opt/*.sh
 
 RUN apk update && \
     apk add --no-cache python3 py3-pip && \
@@ -55,9 +54,9 @@ RUN apk update && \
     # Removed the .cache to save space
     rm -rf /var/cache/apk/*
 
-WORKDIR /opt/spark/work-dir
-ENTRYPOINT [ "/opt/entrypoint.sh" ]
+# WORKDIR /opt/spark/work-dir
+# ENTRYPOINT [ "/opt/entrypoint.sh" ]
 
 # Specify the User that the actual main process will run as
-ARG spark_uid=185
-USER ${spark_uid}
+# ARG spark_uid=185
+# USER ${spark_uid}
