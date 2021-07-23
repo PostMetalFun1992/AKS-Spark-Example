@@ -67,19 +67,6 @@ resource "azurerm_storage_data_lake_gen2_filesystem" "gen2_data" {
   }
 }
 
-resource "azurerm_container_registry" "bdcc" {
-  depends_on = [
-    azurerm_resource_group.bdcc
-  ]
-
-  name                = "acr${var.ENV}${var.LOCATION}"
-  resource_group_name = azurerm_resource_group.bdcc.name
-  location            = azurerm_resource_group.bdcc.location
-
-  sku           = "Basic"
-  admin_enabled = false
-}
-
 resource "azurerm_kubernetes_cluster" "bdcc" {
   depends_on = [
     azurerm_resource_group.bdcc
@@ -92,7 +79,7 @@ resource "azurerm_kubernetes_cluster" "bdcc" {
 
   default_node_pool {
     name       = "default"
-    node_count = 2
+    node_count = 1
     vm_size    = "Standard_D2_v2"
   }
 
@@ -105,18 +92,6 @@ resource "azurerm_kubernetes_cluster" "bdcc" {
     env    = var.ENV
   }
 }
-
-resource "azurerm_role_assignment" "bdcc" {
-  depends_on = [
-    azurerm_resource_group.bdcc,
-    azurerm_container_registry.bdcc,
-    azurerm_kubernetes_cluster.bdcc
-  ]
-  scope                = azurerm_container_registry.bdcc.id
-  role_definition_name = "AcrPull"
-  principal_id         = azurerm_kubernetes_cluster.bdcc.kubelet_identity[0].object_id
-}
-
 
 output "client_certificate" {
   value = azurerm_kubernetes_cluster.bdcc.kube_config.0.client_certificate
