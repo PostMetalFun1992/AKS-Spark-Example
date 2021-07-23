@@ -25,9 +25,13 @@ spark-submit \
 ```
 docker build -f ./docker/Dockerfile -t spark-azure .
 ```
+* Before run spark scripts:
+```
+cp ./docker/.env.sample ./docker/.env  # copy and fill all required credentials
+```
 * Run spark-script:
 ```
-docker run -it --name spaz -v `pwd`/src:/opt/spark/work-dir/spark-app spark-azure:latest spark-submit /opt/spark/work-dir/spark-app/main/spark_main.py
+docker run -it --name spaz --env-file ./docker/.env -v `pwd`/src:/opt/spark/work-dir/spark-app spark-azure:latest spark-submit /opt/spark/work-dir/spark-app/main/spark_main.py
 ```
 * Setup venv for nvim:
 ```
