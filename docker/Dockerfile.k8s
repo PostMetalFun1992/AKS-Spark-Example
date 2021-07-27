@@ -1,0 +1,3 @@
+FROM spark-azure:latest
+
+COPY ./src /opt/spark/work-dir/spark-app
