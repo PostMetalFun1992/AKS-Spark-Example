@@ -41,3 +41,14 @@ python3 -m venv ~/.python-envs/de-course-env/
 source ~/.python-envs/de-course-env/bin/activate
 python3 -m pip install flake8 black isort
 ```
+* Push containers into remote registry
+```
+az login
+az acr login --name crkkabanovwesteurope
+
+docker tag spark-azure:latest crkkabanovwesteurope.azurecr.io/spark/spark-azure
+docker push crkkabanovwesteurope.azurecr.io/spark/spark-azure
+
+docker tag spark-azure-k8s:latest crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s
+docker push crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s
+```
