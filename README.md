@@ -41,7 +41,7 @@ python3 -m venv ~/.python-envs/de-course-env/
 source ~/.python-envs/de-course-env/bin/activate
 python3 -m pip install flake8 black isort
 ```
-* Push containers into remote registry
+* Push containers into remote registry:
 ```
 az login
 az acr login --name crkkabanovwesteurope
