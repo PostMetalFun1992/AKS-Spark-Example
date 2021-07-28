@@ -51,4 +51,21 @@ docker push crkkabanovwesteurope.azurecr.io/spark/spark-azure
 
 docker tag spark-azure-k8s:latest crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s
 docker push crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s
+
+az acr repository list --name crkkabanovwesteurope --output table
+
+az acr repository show-tags --name crkkabanovwesteurope --repository spark/spark-azure --output table
+az acr repository show-tags --name crkkabanovwesteurope --repository spark/spark-azure-k8s --output table
+
+```
+* Interact with aks:
+```
+az aks install-cli
+az aks get-credentials --resource-group rg-kkabanov-westeurope --name aks-kkabanov-westeurope
+kubectl get nodes
+```
+* Check acr - aks intergration:
+```
+az aks check-acr --name aks-kkabanov-westeurope --resource-group rg-kkabanov-westeurope --acr crkkabanovwesteurope.azurecr.io
+
 ```
