@@ -7,8 +7,8 @@ az login
 cd ./terraform
 
 terraform init
-terraform plan -out terraform.plan
-terraform apply terraform.plan
+terraform plan -out ./state/terraform.plan
+terraform apply ./state/terraform.plan
 
 cd ../
 

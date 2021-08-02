@@ -1,6 +1,6 @@
 terraform {
   backend "local" {
-    path = "./terraform.tfstate"
+    path = "./state/terraform.tfstate"
   }
 }
 
@@ -51,17 +51,10 @@ resource "azurerm_storage_account" "bdcc" {
   }
 }
 
-resource "azurerm_storage_data_lake_gen2_filesystem" "gen2_data" {
-  depends_on = [
-    azurerm_storage_account.bdcc
-  ]
-
-  name               = "data"
-  storage_account_id = azurerm_storage_account.bdcc.id
-
-  lifecycle {
-    prevent_destroy = false
-  }
+resource "azurerm_storage_container" "data_container" {
+  name                  = "data"
+  storage_account_name  = azurerm_storage_account.bdcc.name
+  container_access_type = "private"
 }
 
 resource "azurerm_container_registry" "bdcc" {

@@ -147,8 +147,7 @@ cython_debug/
 # terraform
 .terraform.lock.hcl
 .terraform/
-terraform.plan
-terraform.tfstate*
+terraform.*
 
 *.ini
 
