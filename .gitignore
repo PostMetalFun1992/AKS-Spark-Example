@@ -148,3 +148,5 @@ cython_debug/
 .terraform.lock.hcl
 .terraform/
 terraform.plan
+
+*.ini

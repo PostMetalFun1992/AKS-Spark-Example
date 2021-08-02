@@ -12,16 +12,14 @@ def main():
         .load(f"{in_storage_uri}/hotels")
     )
 
-    """
-    weather_raw = spark.read.format("parquet").load(
-        f"{input_storage_uri}/weather"
-    )
-    """
+    weather_raw = spark.read.format("parquet").load(f"{in_storage_uri}/weather")
 
     hotels_raw.show()
-    # weather_raw.show()
+    weather_raw.show()
 
     hotels_raw.write.parquet(f"{out_storage_uri}/hotels")
+
+    spark.stop()
 
 
 if __name__ == "__main__":
