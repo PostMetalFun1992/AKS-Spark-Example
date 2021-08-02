@@ -1,9 +1,6 @@
 terraform {
-  backend "azurerm" {
-    resource_group_name  = "rg-kkabanov-westeurope-terraformstate"
-    storage_account_name = "stkkabanovstate"
-    container_name       = "tfstate"
-    key                  = "prod.terraform.tfstate"
+  backend "local" {
+    path = "./terraform.tfstate"
   }
 }
 
