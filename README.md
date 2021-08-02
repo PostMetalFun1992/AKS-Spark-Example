@@ -75,3 +75,10 @@ kubectl get nodes
 ```
 az aks check-acr --name aks-kkabanov-westeurope --resource-group rg-kkabanov-westeurope --acr crkkabanovwesteurope.azurecr.io
 ```
+* Launch Spark job inside k8s:
+```
+cp ./docker/secret.yaml.sample ./docker/secret.yaml  # fill the same fields as in storage-creds.ini
+kubectl apply -f ./docker/secret.yaml
+chmod +x submit-k8s
+./submit-k8s  # do not forget to install Spark locally and add $SPARK_HOME/bit into $PATH
+```
