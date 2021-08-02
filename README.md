@@ -1,8 +1,14 @@
 # Spark Basic Homework
 
+## 0. Prerequisites
+- Docker
+- Terraform
+- Local spark installation (You need it in order to launch your Spark app in AKS)
+- Azure account
+- Registered application in Azure AD
+
 ## 1. Setup infrastructure via Terraform:
 ```
-# You must have Azure account
 az login
 cd ./terraform
 
@@ -15,17 +21,24 @@ cd ../
 # Destroy all necessary infrastructure after completing the homework:
 terraform destroy
 ```
-* IMPORTANT: Do not forget to add Role Assignment "Storage Blob Data Contributor" to your application registration
-on your storage account. (TODO: Automate this step with Terraform)
+* **IMPORTANT:** Do not forget to add Role Assignment "Storage Blob Data Contributor" to the application registration
+in your storage account. (**TODO:** Automate this step with Terraform)
 
-## 2. Setup local runtime:
-* Build docker container for local launch:
+## 2. Setup to launch locally via Docker:
+* Build docker container to launch the application locally:
 ```
 docker build -f ./docker/Dockerfile -t spark-azure .
 ```
-* Then setup all necessary credentials:
+* Then provide all necessary credentials:
 ```
-cp ./config/storage-creds.ini.sample ./config/storage-creds.ini  # fill credentials inside the copied file
+cp ./config/storage-creds.ini.sample ./config/storage-creds.ini  # Fill credentials inside the copied file
+```
+* Launch spark application locally inside a docker container:
+```
+docker run --rm --name spark-app \
+    -v `pwd`/src:/opt/spark/work-dir/spark-app \
+    -v `pwd`/config:/etc/secrets \
+    spark-azure:latest spark-submit local:///opt/spark/work-dir/spark-app/main/spark_main.py
 ```
 * (Optional) Setup venv for nvim:
 ```
@@ -33,20 +46,13 @@ python3 -m venv ~/.python-envs/de-course-env/
 source ~/.python-envs/de-course-env/bin/activate
 python3 -m pip install flake8 black isort
 ```
-* Run spark application locally inside docker container:
-```
-docker run --rm --name spaz \
-    -v `pwd`/src:/opt/spark/work-dir/spark-app \
-    -v `pwd`/config:/etc/secrets \
-    spark-azure:latest spark-submit local:///opt/spark/work-dir/spark-app/main/spark_main.py
-```
 
-## 3. Setup to run inside aks:
-* Build docker with all necessary sources:
+## 3. Setup to launch inside AKS:
+* Build derived docker container with all necessary source files:
 ```
 docker build -f ./docker/Dockerfile.k8s -t spark-azure-k8s .
 ```
-* Push container into remote registry:
+* Push container into your ACR:
 ```
 az login
 az acr login --name crkkabanovwesteurope
@@ -54,31 +60,32 @@ az acr login --name crkkabanovwesteurope
 docker tag spark-azure-k8s:latest crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s
 docker push crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s
 
-# Checking that container is inside remote registry:
+# Check that container has been pushed successfully:
 az acr repository show-tags --name crkkabanovwesteurope --repository spark/spark-azure-k8s --output table
 ```
 * Setup local kubectl:
 ```
 az aks install-cli
 az aks get-credentials --resource-group rg-kkabanov-westeurope --name aks-kkabanov-westeurope
-# Checking that your local kubectl has been set up to interact with aks:
+
+# Check that your local kubectl has been set up to interact with AKS:
 kubectl get nodes
 ```
-* Healthcheck: Your k8s cluster can pull images from your remote docker registry:
+* Healthcheck: Your AKS cluster can pull images from your ACR:
 ```
 az aks check-acr --name aks-kkabanov-westeurope --resource-group rg-kkabanov-westeurope --acr crkkabanovwesteurope.azurecr.io
 ```
-* Add cluster role binding:
+* Add necessary cluster role binding:
 ```
 kubectl create serviceaccount spark
 kubectl create clusterrolebinding spark-role --clusterrole=edit --serviceaccount=default:spark --namespace=default
 ```
-* Add k8s secret with all necessary credentials:
+* Fill all necessary credentials inside k8s secret and send it to AKS:
 ```
-cp ./config/secret.yaml.sample ./config/secret.yaml  # fill the same fields as in storage-creds.ini
+cp ./config/secret.yaml.sample ./config/secret.yaml  # The same fields as in storage-creds.ini
 kubectl apply -f ./config/secret.yaml
 ```
-* Launch your application (IMPORTANT: do not forget to install Spark locally and add $SPARK_HOME/bit into $PATH):
+* Launch your application inside AKS (**IMPORTANT:** Do not forget to install Spark locally and add `$SPARK_HOME/bin` to `$PATH`):
 ```
 spark-submit \
     --master k8s://https://<API server address>:443 \
