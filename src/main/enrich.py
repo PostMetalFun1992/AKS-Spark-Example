@@ -1,5 +1,6 @@
 import pygeohash as pgh
 import requests
+from pyspark.sql.functions import udf
 
 from constants import OPENCAGE_API_KEY, HotelsEnrichedSchema
 
@@ -14,7 +15,7 @@ def enrich_hotels(spark, hotels_raw):
         except (TypeError, ValueError):
             row["Latitude"], row["Longitude"] = _request_coords(row["Name"])
 
-        row["Geohash"] = calc_geohash(row["Latitude"], row["Longitude"])
+        row["Geohash"] = _calc_geohash(row["Latitude"], row["Longitude"])
 
     return spark.createDataFrame(rows, HotelsEnrichedSchema)
 
@@ -37,7 +38,12 @@ def _request_coords(hotel_name):
     return geometry["lat"], geometry["lng"]
 
 
-def calc_geohash(lat, lng):
+@udf
+def calc_geohash_udf(lat, lng):
+    return _calc_geohash(lat, lng)
+
+
+def _calc_geohash(lat, lng):
     if not lat or not lng:
         return None
 

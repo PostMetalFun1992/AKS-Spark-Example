@@ -13,6 +13,9 @@ def get_storage_uris():
 def create_spark_session():
     spark = SparkSession.builder.getOrCreate()
 
+    spark.sparkContext.addPyFile("/opt/spark/work-dir/spark-app/main/enrich.py")
+    spark.sparkContext.addPyFile("/opt/spark/work-dir/spark-app/main/constants.py")
+
     spark = _configure_input_storage_settings(spark)
     spark = _configure_output_storage_settings(spark)
 
