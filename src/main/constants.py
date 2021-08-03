@@ -33,6 +33,6 @@ HotelsEnrichedSchema = StructType(
         StructField("Address", t.StringType(), False),
         StructField("Latitude", t.DoubleType(), True),
         StructField("Longitude", t.DoubleType(), True),
-        StructField("Geohash", t.StringType(), True),
+        StructField("HotelGeohash", t.StringType(), True),
     ]
 )

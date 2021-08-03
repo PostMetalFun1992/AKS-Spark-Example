@@ -15,18 +15,25 @@ def main():
         .option("header", "true")
         .load(f"{in_storage_uri}/hotels")
     )
+    hotels_enriched = enrich_hotels(spark, hotels_raw)
+    # hotels_enriched.show()
 
     weather_raw = spark.read.format("parquet").load(f"{in_storage_uri}/weather")
-
-    hotels_enriched = enrich_hotels(spark, hotels_raw)
-    hotels_enriched.show()
-
     weather_enriched = weather_raw.withColumn(
-        "geohash", calc_geohash_udf(col("lat"), col("lng"))
+        "weather_geohash", calc_geohash_udf(col("lat"), col("lng"))
     )
-    weather_enriched.show()
+    #  weather_enriched.show()
 
-    hotels_raw.write.parquet(f"{out_storage_uri}/hotels")
+    weather_hotels = weather_enriched.join(
+        hotels_enriched,
+        weather_enriched.weather_geohash == hotels_enriched.HotelGeohash,
+        "leftouter",
+    )
+    # weather_hotels.show()
+
+    weather_hotels.write.partitionBy("year", "month", "day").parquet(
+        f"{out_storage_uri}/weather_hotels"
+    )
 
     spark.stop()
 

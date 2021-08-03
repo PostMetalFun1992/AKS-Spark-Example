@@ -15,7 +15,7 @@ def enrich_hotels(spark, hotels_raw):
         except (TypeError, ValueError):
             row["Latitude"], row["Longitude"] = _request_coords(row["Name"])
 
-        row["Geohash"] = _calc_geohash(row["Latitude"], row["Longitude"])
+        row["HotelGeohash"] = _calc_geohash(row["Latitude"], row["Longitude"])
 
     return spark.createDataFrame(rows, HotelsEnrichedSchema)
 
