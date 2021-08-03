@@ -1,3 +1,4 @@
+import pygeohash as pgh
 import requests
 
 from constants import OPENCAGE_API_KEY, HotelsEnrichedSchema
@@ -12,6 +13,8 @@ def enrich_hotels(spark, hotels_raw):
             row["Longitude"] = float(row["Longitude"])
         except (TypeError, ValueError):
             row["Latitude"], row["Longitude"] = _request_coords(row["Name"])
+
+        row["Geohash"] = calc_geohash(row["Latitude"], row["Longitude"])
 
     return spark.createDataFrame(rows, HotelsEnrichedSchema)
 
@@ -32,3 +35,10 @@ def _request_coords(hotel_name):
     geometry = next(iter(results))["geometry"]
 
     return geometry["lat"], geometry["lng"]
+
+
+def calc_geohash(lat, lng):
+    if not lat or not lng:
+        return None
+
+    return pgh.encode(lat, lng, precision=4)

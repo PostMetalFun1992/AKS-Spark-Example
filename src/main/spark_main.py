@@ -16,8 +16,8 @@ def main():
     hotels_enriched = enrich_hotels(spark, hotels_raw)
     hotels_enriched.show()
 
-    weather_raw = spark.read.format("parquet").load(f"{in_storage_uri}/weather")
-    weather_raw.printSchema()
+    # weather_raw = spark.read.format("parquet").load(f"{in_storage_uri}/weather")
+    # weather_raw.printSchema()
 
     """
     root
@@ -31,7 +31,7 @@ def main():
     |-- day: integer (nullable = true)
     """
 
-    hotels_raw.write.parquet(f"{out_storage_uri}/hotels")
+    # hotels_raw.write.parquet(f"{out_storage_uri}/hotels")
 
     spark.stop()
 
