@@ -103,3 +103,8 @@ spark-submit \
 kubectl get pods
 kubectl logs -f <DRIVER_POD_NAME>
 ```
+* Example of the output dataset and logs are inside `media` folder
+
+## 4. TODO:
+* Role Assignment "Storage Blob Data Contributor" via Terraform
+* Improve application's exectution time (Parallelization, Number of Active Executors, etc.)
