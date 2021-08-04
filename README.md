@@ -36,9 +36,9 @@ cp ./config/storage-creds.ini.sample ./config/storage-creds.ini  # Fill credenti
 * Launch spark application locally inside a docker container:
 ```
 docker run --rm --name spark-app \
-    -v `pwd`/src:/opt/spark/work-dir/spark-app \
+    -v `pwd`/src:/opt/spark/work-dir \
     -v `pwd`/config:/etc/secrets \
-    spark-azure:latest spark-submit local:///opt/spark/work-dir/spark-app/main/spark_main.py
+    spark-azure:latest spark-submit local:///opt/spark/work-dir/spark_main.py
 ```
 * (Optional) Setup venv for nvim:
 ```

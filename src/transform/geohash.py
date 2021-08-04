@@ -2,10 +2,10 @@ import pygeohash as pgh
 import requests
 from pyspark.sql.functions import udf
 
-from constants import OPENCAGE_API_KEY, HotelsEnrichedSchema
+from transform.constants import OPENCAGE_API_KEY, HotelsEnrichedSchema
 
 
-def enrich_hotels(spark, hotels_raw):
+def enrich_hotels_with_geohash(spark, hotels_raw):
     rows = hotels_raw.rdd.map(lambda r: r.asDict()).collect()
 
     for row in rows:
