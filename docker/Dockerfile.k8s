@@ -1,3 +1,3 @@
 FROM spark-azure:latest
 
-COPY ./src /opt/spark/work-dir/spark-app
+COPY --chown=185 ./src /opt/spark/work-dir

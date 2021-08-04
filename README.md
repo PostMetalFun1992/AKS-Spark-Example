@@ -96,7 +96,7 @@ spark-submit \
     --conf spark.kubernetes.container.image=crkkabanovwesteurope.azurecr.io/spark/spark-azure-k8s:latest \
     --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
     --conf spark.kubernetes.container.image.pullPolicy=Always \
-    local:///opt/spark/work-dir/spark-app/main/spark_main.py
+    local:///opt/spark/work-dir/spark_main.py
 ```
 * Check driver's and executors' state:
 ```
