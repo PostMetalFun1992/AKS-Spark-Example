@@ -31,7 +31,7 @@ def main():
     )
     # weather_hotels.show()
 
-    weather_hotels.write.partitionBy("year", "month", "day").parquet(
+    weather_hotels.write.mode("overwrite").partitionBy("year", "month", "day").parquet(
         f"{out_storage_uri}/weather_hotels"
     )
 
